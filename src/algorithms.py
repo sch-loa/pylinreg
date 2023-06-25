@@ -11,12 +11,12 @@ def recta(x, puntos):
 # Retorna la función curva polinomial más cercana a todos los puntos
 def curva_base_x(x, puntos):
     a, b = hallar_a_y_b(puntos)
-    return b*x**a
+    return math.exp(b)*x**a
 
 # Retorna la función curva exponencial de base e más cercana a todos los puntos
 def curva_base_e(x, puntos):
     a, b = hallar_a_y_b(puntos)
-    return b*math.e**(a*x)
+    return math.exp(b)*math.e**(a*x)
 
 # Calcula y retorna los valores de a y b de acuerdo a la fórmula que se conoce
 def hallar_a_y_b(puntos):
@@ -63,7 +63,7 @@ def multiplicatoria(puntos):
 
 # Retorna los puntos linealizados para una función polinomial
 def pares_polinomial(puntos):
-    return np.copy(np.log(puntos))
+    return np.log(np.copy(puntos))
 
 # Retorna los puntos linealizados para una función exponencial de base e
 def pares_exponencial_base_e(puntos):
