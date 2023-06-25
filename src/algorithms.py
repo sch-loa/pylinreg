@@ -3,7 +3,7 @@ import numpy as np
 import sympy as sp
 import math
 
-# Función principal del metodo de regresión por cuadrados mínimos
+# Función principal del metodo de regresión por cuadrados mínimos, devuelve todas las funciones calculadas
 def regresion_lineal(puntos):
     x = sp.symbols('x')
     
