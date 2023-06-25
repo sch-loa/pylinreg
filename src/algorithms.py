@@ -26,22 +26,22 @@ def curva_base_e(x, puntos):
     a, b = hallar_a_y_b(puntos_base_e)
     return b*math.e**(a*x)
 
-# Calcula y retorna los valores de a y b resolviendo un sistema matricial
+# Calcula y retorna los valores de a y b de acuerdo a la fórmula que se conoce
 def hallar_a_y_b(puntos):
-    a = sp.symbols('a')
-    b = sp.symbols('b')
-
     x = puntos[:,0]
     y = puntos[:,1]
     n = puntos.shape[0]
 
     x_sum = sumatoria(x)
+    x_sqrt_sum = sumatoria(np.copy(x) ** 2)
+    x_sum_sqrt = x_sum**2
     y_sum = sumatoria(y)
+    xy_sum = sumatoria(multiplicatoria(puntos))
 
-    matriz_incognita = np.array([[(sumatoria(x**2)),(x_sum)],[x_sum, n]])
-    matriz_resultado = np.array([sumatoria(multiplicatoria(puntos)), y_sum])
+    a = (n*xy_sum - x_sum*y_sum) / (n*x_sqrt_sum - x_sum_sqrt)
+    b = (x_sqrt_sum*y_sum - x_sum*xy_sum) / (n*x_sqrt_sum - x_sum_sqrt)
 
-    return np.linalg.solve(matriz_incognita, matriz_resultado)
+    return (a, b)
 
 # Suma todos los elementos en un array de una dimensión
 def sumatoria(vector_puntos):
