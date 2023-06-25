@@ -45,7 +45,7 @@ def hallar_a_y_b(puntos):
 
 # Suma todos los elementos en un array de una dimensión
 def sumatoria(vector_puntos):
-    return np.sum(vector_puntos)
+    return np.sum(np.copy(vector_puntos))
 
 # Multiplica las columnas de una matriz de 2x2
 def multiplicatoria(puntos):
@@ -53,14 +53,14 @@ def multiplicatoria(puntos):
 
 # Retorna los puntos linealizados para una función polinomial
 def pares_polinomial(puntos):
-    return np.log(puntos)
+    return np.copy(np.log(puntos))
 
 # Retorna los puntos linealizados para una función exponencial de base e
 def pares_exponencial_base_e(puntos):
-    arr = puntos
+    arr = np.copy(puntos)
     arr[:, 1] = np.log(arr[:, 1])
     return arr
 
 # Retorna datos del archivo Excel en forma de DataFrame
 def importar_datos():
-    return pd.read_excel('./datos/ACUMULADOS vs DIAS.xlsx', sheet_name = 'Hoja1', usecols = ['día', 'acumulados'], skiprows = 4)[1:]
+    return pd.read_excel('./datos/ACUMULADOS vs DIAS.xlsx', sheet_name = 'Hoja1', usecols = ['día', 'acumulados'], skiprows = 4)[1:].values
