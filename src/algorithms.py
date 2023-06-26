@@ -76,6 +76,10 @@ def fx(func, x_n):
     x = sp.symbols('x')
     return func.subs(x, x_n).evalf()
 
+# Calcula tiempo de duplicacion
+def calcular_tiempo_duplicacion(grow_rate):
+    return np.log(2) / grow_rate
+
 # Calcula la derivada primera numérica aproximada de un punto dado en una funcion
 def calcular_derivada_num_1ra(func, x_n, h = 10**-5):
     return (fx(func, x_n + h) - fx(func, x_n)) / h 

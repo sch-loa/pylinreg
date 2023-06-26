@@ -5,7 +5,7 @@ import numpy as np
 from algorithms import importar_datos, pares_polinomial, pares_exponencial_base_e
 from algorithms import recta, curva_base_x, curva_base_e
 from algorithms import calcular_coeficiente_r, relacion_mas_precisa
-from algorithms import calcular_derivada_num_1ra, calcular_derivada_num_2da
+from algorithms import calcular_derivada_num_1ra, calcular_derivada_num_2da, calcular_tiempo_duplicacion
 from graphics import graficar, graficar_derivadas
 
 
@@ -115,6 +115,12 @@ func_mas_precisa = relacion_mas_precisa({'Lineal': (recta_puntos, coef_recta), '
 puntos_derivada_num_1ra = np.array([calcular_derivada_num_1ra(func_mas_precisa, i) for i in puntos[:,0]])
 puntos_derivada_num_2da = np.array([calcular_derivada_num_2da(func_mas_precisa, j) for j in puntos[:,0]])
 
+f_prima = sp.diff(func_mas_precisa, x)
+print(func_mas_precisa)
+print(f_prima)
+grow_rate = np.log( puntos.shape[0] ) / puntos[-1,0]
+print(f'   Tiempo de duplicación respecto al último día: {calcular_tiempo_duplicacion(round(f_prima, 2))} días')
+
 print(CARTEL_CONCLUSIONES)
 
 ############
@@ -135,8 +141,6 @@ COLORES = ['crimson', 'cornflowerblue', 'mediumslateblue']
 graficar(FUNCIONES, TITULOS, puntos, COLORES, COEFICIENTES_CORRELACION, PARAMETROS)
 
 # DERIVADAS DE LA CURVA DE MAYOR APROXIMACION
-f_prima = sp.diff(func_mas_precisa, x)
-
 DERIVADAS = [sp.lambdify(x, f_prima, 'numpy'), sp.lambdify(x, sp.diff(f_prima,x), 'numpy')] 
 TITULOS_DERIVADAS = ['Primera', 'Segunda']
 
