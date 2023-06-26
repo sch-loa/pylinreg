@@ -71,12 +71,30 @@ def pares_exponencial_base_e(puntos):
     arr[:, 1] = np.log(arr[:, 1])
     return arr
 
+# Evalua la funcion en x y devuelve el resultado
+def fx(func, x_n):
+    x = sp.symbols('x')
+    return func.subs(x, x_n).evalf()
+
+# Calcula la derivada primera numérica aproximada de un punto dado en una funcion
+def calcular_derivada_num_1ra(func, x_n, h = 10**-5):
+    return (fx(func, x_n + h) - fx(func, x_n)) / h 
+
+# Calcula la derivada segunda numérica aproximada de un punto dado en una funcion
+def calcular_derivada_num_2da(func, x_n, h = 10**-5):
+    return (fx(func, x_n - h) - 2*fx(func, x_n) + fx(func, x_n + h)) / h**2
+
 # Retorna datos del archivo Excel en forma de DataFrame
 def importar_datos():
     return pd.read_excel('./datos/ACUMULADOS vs DIAS.xlsx', sheet_name = 'Hoja1', usecols = ['día', 'acumulados'], skiprows = 4)[1:].values
 
+# Imprime la relacion más precisa y su coeficiente de relacion r
 def relacion_mas_precisa(relaciones_coeffs):
-    mayor_valor = max(relaciones_coeffs.values())
+    func_mayor = 0
+    mayor_valor = max([i[1] for i in relaciones_coeffs.values()])
+
     for clave, valor in relaciones_coeffs.items():
-        if(valor == mayor_valor):
-            print(f'   Relación con el mayor grado de correlación: {clave},\n   Coeficiente de correlación: {round(valor, 2)}\n')
+        if(valor[1] == mayor_valor):
+            print(f'   Relación con el mayor grado de correlación: {clave},\n   Coeficiente de correlación: {round(valor[1], 2)}')
+            func_mayor = valor[0]
+    return func_mayor

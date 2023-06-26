@@ -1,10 +1,12 @@
 from matplotlib import pyplot as plt
 import sympy as sp
+import numpy as np
 
 from algorithms import importar_datos, pares_polinomial, pares_exponencial_base_e
 from algorithms import recta, curva_base_x, curva_base_e
 from algorithms import calcular_coeficiente_r, relacion_mas_precisa
-from graphics import graficar
+from algorithms import calcular_derivada_num_1ra, calcular_derivada_num_2da
+from graphics import graficar, graficar_derivadas
 
 
 CARTEL_METODO = """
@@ -42,9 +44,35 @@ CARTEL_METODO = """
 |                                                                            |
 |  El método se basa en encontrar los valores óptimos para los coeficientes  |
 |  de la funcion que minimicen el error cuadrático medio entre los valores   |
-|  reales y los valores predichos. intenta minimizar la suma de cuadrados    |
+|  reales y los valores predichos. Intenta minimizar la suma de cuadrados    |
 |  de las diferencias en las ordenadas entre los puntos generados por la     |
 |  función elegida y los correspondientes valores en los datos.              |
+|____________________________________________________________________________|
+"""
+
+CARTEL_DERIVADA_PRIMERA = """
+ ____________________________________________________________________________
+|                                                                            |
+|                              DERIVADA PRIMERA                              |
+|____________________________________________________________________________|
+|                                                                            |
+|  La derivada primera de una función representa la tasa de cambio de la     |
+|  variable dependiente por cada cambio unitario en la variable              |
+|  independiente. Brinda información sobre la pendiente y la dirección de    |
+|  la relación entre las variables involucradas en el modelo lineal.         |
+|____________________________________________________________________________|
+"""
+
+CARTEL_DERIVADA_SEGUNDA = """
+ ____________________________________________________________________________
+|                                                                            |
+|                              DERIVADA SEGUNDA                              |
+|____________________________________________________________________________|
+|                                                                            |
+|  La derivada segunda de una función en un contexto de regresión no lineal  |
+|  proporciona información sobre la concavidad de la curva. Además, la       |
+|  magnitud de la derivada puede indicar la tasa de cambio de la pendiente   |
+|  en diferentes puntos de la misma.                                         |
 |____________________________________________________________________________|
 """
 
@@ -55,12 +83,16 @@ CARTEL_CONCLUSIONES = """
 |____________________________________________________________________________|
 |                                                                            |
 |  Habiendo calculado el coeficiente de correlación para cada curva, existe  |
-|  una cuyo valor es mayor al de los demás. Esto implica que la misma        |
-|  expresa con mayor precisión la relación entre los datos proporcionados    |
-|  y por lo tanto sería capaz de predecir resultados más cercanos a los      |
-|  valores reales.                                                           |
+|  una cuyo valor es mayor al de los demás (acotado entre 0 y 1). Esto       |
+|  implica que la misma expresa con mayor precisión la relación entre los    |
+|  datos proporcionados y por lo tanto sería capaz de predecir resultados    |
+|  más cercanos a los valores reales.                                        |
 |____________________________________________________________________________|
 """
+
+##########################
+# CALCULOS E IMPRESIONES #
+##########################
 
 print(CARTEL_METODO)
 
@@ -78,21 +110,34 @@ coef_recta = calcular_coeficiente_r(puntos)
 coef_curva_poli = calcular_coeficiente_r(puntos_base_x)
 coef_curva_exp = calcular_coeficiente_r(puntos_base_e)
 
+func_mas_precisa = relacion_mas_precisa({'Lineal': (recta_puntos, coef_recta), 'Polinomial': (recta_puntos_base_x, coef_curva_poli), 'Exponencial': (recta_puntos_base_e, coef_curva_exp) })
+
+puntos_derivada_num_1ra = np.array([calcular_derivada_num_1ra(func_mas_precisa, i) for i in puntos[:,0]])
+puntos_derivada_num_2da = np.array([calcular_derivada_num_2da(func_mas_precisa, j) for j in puntos[:,0]])
+
 print(CARTEL_CONCLUSIONES)
-relacion_mas_precisa({'Lineal': coef_recta, 'Polinomial': coef_curva_poli, 'Exponencial': coef_curva_exp })
 
 ############
 # GRAFICOS #
 ############
+
+# CURVAS DE REGRESION
 func_recta = sp.lambdify(x, recta_puntos, 'numpy')
 func_curva_base_x = sp.lambdify(x, recta_puntos_base_x, 'numpy')
 func_curva_base_e = sp.lambdify(x, recta_puntos_base_e, 'numpy')
 
 FUNCIONES = [func_recta, func_curva_base_x, func_curva_base_e]
-PUNTOS = [puntos, puntos, puntos]
 COEFICIENTES_CORRELACION = [coef_recta, coef_curva_poli, coef_curva_exp]
 PARAMETROS = [recta_params, curva_poli_params, curva_exp_params]
 TITULOS = ["Recta", "Curva Polinomial", "Curva Exponencial"]
 COLORES = ['crimson', 'cornflowerblue', 'mediumslateblue']
 
-graficar(FUNCIONES, TITULOS, PUNTOS, COLORES, COEFICIENTES_CORRELACION, PARAMETROS)
+graficar(FUNCIONES, TITULOS, puntos, COLORES, COEFICIENTES_CORRELACION, PARAMETROS)
+
+# DERIVADAS DE LA CURVA DE MAYOR APROXIMACION
+f_prima = sp.diff(func_mas_precisa, x)
+
+DERIVADAS = [sp.lambdify(x, f_prima, 'numpy'), sp.lambdify(x, sp.diff(f_prima,x), 'numpy')] 
+TITULOS_DERIVADAS = ['Primera', 'Segunda']
+
+graficar_derivadas(DERIVADAS, TITULOS_DERIVADAS, puntos)
