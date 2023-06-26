@@ -6,17 +6,17 @@ import math
 # Retorna la recta más cercana a todos los puntos
 def recta(x, puntos):
     a, b = hallar_a_y_b(puntos)
-    return a*x + b
+    return (a*x + b, (a,b))
 
 # Retorna la función curva polinomial más cercana a todos los puntos
 def curva_base_x(x, puntos):
     a, b = hallar_a_y_b(puntos)
-    return math.exp(b)*x**a
+    return (math.exp(b)*x**a, (a,b))
 
 # Retorna la función curva exponencial de base e más cercana a todos los puntos
 def curva_base_e(x, puntos):
     a, b = hallar_a_y_b(puntos)
-    return math.exp(b)*math.e**(a*x)
+    return (math.exp(b)*math.e**(a*x), (a, b))
 
 # Calcula y retorna los valores de a y b de acuerdo a la fórmula que se conoce
 def hallar_a_y_b(puntos):
@@ -74,3 +74,9 @@ def pares_exponencial_base_e(puntos):
 # Retorna datos del archivo Excel en forma de DataFrame
 def importar_datos():
     return pd.read_excel('./datos/ACUMULADOS vs DIAS.xlsx', sheet_name = 'Hoja1', usecols = ['día', 'acumulados'], skiprows = 4)[1:].values
+
+def relacion_mas_precisa(relaciones_coeffs):
+    mayor_valor = max(relaciones_coeffs.values())
+    for clave, valor in relaciones_coeffs.items():
+        if(valor == mayor_valor):
+            print(f'   Relación con el mayor grado de correlación: {clave},\n   Coeficiente de correlación: {round(valor, 2)}\n')
