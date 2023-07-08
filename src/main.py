@@ -116,10 +116,10 @@ puntos_derivada_num_1ra = np.array([calcular_derivada_num_1ra(func_mas_precisa, 
 puntos_derivada_num_2da = np.array([calcular_derivada_num_2da(func_mas_precisa, j) for j in puntos[:,0]])
 
 f_prima = sp.diff(func_mas_precisa, x)
-print(func_mas_precisa)
-print(f_prima)
-grow_rate = np.log( puntos.shape[0] ) / puntos[-1,0]
-print(f'   Tiempo de duplicación respecto al último día: {calcular_tiempo_duplicacion(round(f_prima, 2))} días')
+
+func_prima = sp.lambdify(x, f_prima, 'numpy')
+grow_rate = ((puntos[1][-1] - puntos[1][0])) / (puntos[1][0] * 100)
+print(f'   Tiempo de duplicación respecto al último día: {round(calcular_tiempo_duplicacion(grow_rate), 2)} días')
 
 print(CARTEL_CONCLUSIONES)
 
